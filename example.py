@@ -8,7 +8,7 @@ from nimblenet.tools import print_test
 
 
 # Training set
-dataset             = [ Instance( [0,0], [0] ), Instance( [1,0], [1] ), Instance( [0,1], [1] ), Instance( [1,1], [1] ) ]
+dataset             = [ Instance( [0,0,0], [0] ), Instance( [1,0,1], [1] ), Instance( [0,1,0], [1] ), Instance( [1,1,0], [1] ) ]
 
 preprocess          = construct_preprocessor( dataset, [standarize] ) 
 training_data       = preprocess( dataset )
@@ -18,7 +18,7 @@ test_data           = preprocess( dataset )
 cost_function       = cross_entropy_cost
 settings            = {
     # Required settings
-    "n_inputs"              : 2,       # Number of network input signals
+    "n_inputs"              : 3,       # Number of network input signals
     "layers"                : [  (3, sigmoid_function), (1, sigmoid_function) ],
                                         # [ (number_of_neurons, activation_function) ]
                                         # The last pair in the list dictate the number of output signals
@@ -112,6 +112,6 @@ print_test( network, training_data, cost_function )
 """
 Prediction Example
 """
-prediction_set = [ Instance([0,1]), Instance([1,0]) ]
+prediction_set = [ Instance([0,1,3]), Instance([1,0,4]) ]
 prediction_set = preprocess( prediction_set )
 print network.predict( prediction_set ) # produce the output signal

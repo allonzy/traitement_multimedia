@@ -4,7 +4,7 @@ import numpy as np
 import collections
 import random
 import math
-
+import matplotlib.pyplot as plt
 
 ["check_network_structure", "verify_dataset_shape_and_modify", "print_training_status", "print_training_results"]
 
