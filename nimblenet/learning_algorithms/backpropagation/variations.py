@@ -8,12 +8,13 @@ default_configuration = {
     'ERROR_LIMIT'           : 0.001, 
     'learning_rate'         : 0.03, 
     'batch_size'            : 1, 
-    'print_rate'            : 1000, 
+    'print_rate'            : 500,
     'save_trained_network'  : False,
     'input_layer_dropout'   : 0.0,
     'hidden_layer_dropout'  : 0.0, 
     'evaluation_function'   : None,
-    'max_iterations'        : ()
+    'max_iterations'        : (),
+    'plot_error'            : True
 }
 
 def adagrad(network, trainingset, testset, cost_function, epsilon = 1e-8, **kwargs ):

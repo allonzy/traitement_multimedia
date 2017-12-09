@@ -9,12 +9,27 @@ import matplotlib.pyplot as plt
 ["check_network_structure", "verify_dataset_shape_and_modify", "print_training_status", "print_training_results"]
 
 
-def backpropagation_foundation(network, trainingset, testset, cost_function, calculate_dW, evaluation_function = None, ERROR_LIMIT = 1e-3, max_iterations = (), batch_size = 0, input_layer_dropout = 0.0, hidden_layer_dropout = 0.0, print_rate = 1000, save_trained_network = False, **kwargs):
+def backpropagation_foundation(network,
+                               trainingset,
+                               testset,
+                               cost_function,
+                               calculate_dW,
+                               evaluation_function = None,
+                               ERROR_LIMIT = 1e-3,
+                               max_iterations = (),
+                               batch_size = 0,
+                               input_layer_dropout = 0.0,
+                               hidden_layer_dropout = 0.0,
+                               print_rate = 1000,
+                               save_trained_network = False,
+                               plot_error = False,
+                               **kwargs):
     check_network_structure( network, cost_function ) # check for special case topology requirements, such as softmax
     
     training_data, training_targets = verify_dataset_shape_and_modify( network, trainingset )
     test_data, test_targets    = verify_dataset_shape_and_modify( network, testset )
-    
+
+
     
     # Whether to use another function for printing the dataset error than the cost function. 
     # This is useful if you train the network with the MSE cost function, but are going to 
@@ -31,7 +46,15 @@ def backpropagation_foundation(network, trainingset, testset, cost_function, cal
     
     error                      = calculate_print_error(network.update( test_data ), test_targets )
     reversed_layer_indexes     = range( len(network.layers) )[::-1]
-    
+    # Create the plot for error printing
+    if plot_error:
+        plt.figure()
+        plt.ion()
+        plt.axis([0,max_iterations if max_iterations else 1000,0,1.0])
+        plt.title("Error calculation over iteration", fontsize=20)
+        plt.xlabel("iteration", fontsize=20)
+        plt.ylabel("error", fontsize=20)
+        plt.grid(True)
     epoch                      = 0
     while error > ERROR_LIMIT and epoch < max_iterations:
         epoch += 1
@@ -75,16 +98,19 @@ def backpropagation_foundation(network, trainingset, testset, cost_function, cal
             #end weight adjustment loop
         
         error = calculate_print_error(network.update( test_data ), test_targets )
-        
+
+
         if epoch%print_rate==0:
             # Show the current training status
             print "[training] Current error:", error, "\tEpoch:", epoch
-    
+            if plot_error:
+                plt.scatter(error, epoch)
+                plt.pause(0.05)
+
     print "[training] Finished:"
     print "[training]   Converged to error bound (%.4g) with error %.4g." % ( ERROR_LIMIT, error )
     print "[training]   Measured quality: %.4g" % network.measure_quality( training_data, training_targets, cost_function )
     print "[training]   Trained for %d epochs." % epoch
-    
     if save_trained_network and confirm( promt = "Do you wish to store the trained network?" ):
         network.save_network_to_file()
-# end backprop
+    # end backprop

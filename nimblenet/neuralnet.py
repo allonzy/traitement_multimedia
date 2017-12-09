@@ -69,7 +69,7 @@ class NeuralNet:
         # evaluate the output signal with the cost function
         return cost_function(out, training_targets )
     #end
-    
+
     
     def measure_quality(self, training_data, training_targets, cost_function ):
         # perform a forward operation to calculate the output signal
@@ -112,7 +112,7 @@ class NeuralNet:
     # end gradient
     
     
-    def check_gradient(self, trainingset, cost_function, epsilon = 1e-4 ):
+    def check_gradient(self, trainingset, cost_function, epsilon = 1e-4):
         check_network_structure( self, cost_function ) # check for special case topology requirements, such as softmax
     
         training_data, training_targets = verify_dataset_shape_and_modify( self, trainingset )
@@ -131,6 +131,7 @@ class NeuralNet:
             left_side           = self.error( initial_weights - perturbed, training_data, training_targets, cost_function )
             numeric_gradient[i] = (right_side - left_side) / (2 * epsilon)
             perturbed[i]        = 0
+            print i,"/",self.n_weights
         #end loop
         
         # Reset the weights

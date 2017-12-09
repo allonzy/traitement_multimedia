@@ -8,17 +8,21 @@ from nimblenet.tools import print_test
 from read_img import read_img
 
 # Training set
-inputLayerSize, outputLayerSize, dataset = read_img.readDataSource()
+inputLayerSize, outputLayerSize, dataset = read_img.readDataSource(pickle_unpickle= "res/training_data_2.data")
 
 preprocess          = construct_preprocessor( dataset, [standarize] )
 training_data       = preprocess( dataset )
 test_data           = preprocess( dataset )
 
 cost_function = cross_entropy_cost
+print inputLayerSize
 settings = {
     # Required settings
     "n_inputs": inputLayerSize,  # Number of network input signals
-    "layers": [(3, sigmoid_function), (outputLayerSize, sigmoid_function)],
+    "layers": [
+        (int(inputLayerSize*0.4), sigmoid_function),
+        (outputLayerSize, sigmoid_function)
+    ],
     # [ (number_of_neurons, activation_function) ]
     # The last pair in the list dictate the number of output signals
 
@@ -31,9 +35,9 @@ settings = {
 # initialize the neural network
 network = NeuralNet(settings)
 network.check_gradient(training_data, cost_function)
-
+network.save_network_to_file("res/network_1.pckl")
 ## load a stored network configuration
-# network           = NeuralNet.load_network_from_file( "network0.pkl" )
+# network           = NeuralNet.load_network_from_file( "res/network_1.pckl")
 
 
 # Train the network using backpropagation
@@ -43,7 +47,7 @@ RMSprop(
     test_data,  # specify the test set
     cost_function,  # specify the cost function to calculate error
 
-    ERROR_LIMIT=0.2,  # define an acceptable error limit
+    ERROR_LIMIT=0.1,  # define an acceptable error limit
     # max_iterations         = 100,      # continues until the error limit is reach if this argument is skipped
     batch_size=0,  # 1 := no batch learning, 0 := entire trainingset as a batch, anything else := batch size
     print_rate=1000,  # print error status every `print_rate` epoch.
